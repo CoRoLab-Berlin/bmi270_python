@@ -1,6 +1,6 @@
 import h5py
 
-from BMI270_I2C.BMI270 import *
+import BMI270_I2C
 
 # -------------------------------------------------
 # INITIALIZATION
