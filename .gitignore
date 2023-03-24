@@ -13,3 +13,8 @@
 
 # H5Py
 *.h5
+
+# PyPI
+dist
+build
+*.egg-info
