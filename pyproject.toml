@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bmi270"
+version = "0.3"
+authors = [{name = "Kevin Sommler", email = "sommler@live.de"}]
+description = "WIP - BMI270 I2C Python library"
+readme = "README.md"
+requires-python = ">=3.8"
+keywords = ["BMI270", "I2C", "IMU", "sensor", "driver", "accelerometer", "gyroscope", "gyro", "bosch", "sensortech", "smbus2", "library"]
+license = { text = "MIT" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: System :: Hardware",
+]
+dependencies = [
+    "smbus2 >= 0.4.2"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/CoRoLab-Berlin/bmi270_python"
+"Bug Tracker" = "https://github.com/CoRoLab-Berlin/bmi270_python/issues"

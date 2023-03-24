@@ -1,4 +1,0 @@
-from BMI270_I2C import BMI270
-from BMI270_I2C import config_file
-from BMI270_I2C import definitions
-from BMI270_I2C import registers
