@@ -4,11 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "bmi270"
-version = "0.3"
+version = "0.3.3"
 authors = [{name = "Kevin Sommler", email = "sommler@live.de"}]
 description = "WIP - BMI270 I2C Python library"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.7"
 keywords = ["BMI270", "I2C", "IMU", "sensor", "driver", "accelerometer", "gyroscope", "gyro", "bosch", "sensortech", "smbus2", "library"]
 license = { text = "MIT" }
 classifiers = [

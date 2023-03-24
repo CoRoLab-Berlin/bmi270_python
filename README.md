@@ -6,7 +6,7 @@ WIP BMI270 I2C Python implementation.
 The package is [available on pypi.org](https://pypi.org/project/bmi270).
 
 You can install this package using this command:
-`python3 -m pip install bmi270`
+`pip3 install bmi270`
 
 ## Usage
 Wire the breakout board with these lines : GND, 3V3, SDA, SCL
@@ -25,7 +25,7 @@ Make sure that the device is available at `0x68` or `0x69` i2c address by runnin
 **This library requires [smbus2](https://github.com/kplindegaard/smbus2)** (auto installed)
 
 Manual installation:
-`python3 -m pip install smbus2`
+`pip3 install smbus2`
 
 **H5py** (for data plotting)
 Ubuntu:
