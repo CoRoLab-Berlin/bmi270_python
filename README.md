@@ -1,7 +1,6 @@
-# BMI270 I2C Python Implementation
+# BMI270 I2C Python Implementation - Version: 0.3
 
 WIP BMI270 I2C Python implementation.
-**Version:** 0.3
 
 ## Installation
 The package is [available on pypi.org](https://pypi.org/project/bmi270).
@@ -22,7 +21,13 @@ Make sure that the device is available at `0x68` or `0x69` i2c address by runnin
 
 ## Dependencies
 
-### H5py (for data plotting)
+#### smbus2
+**This library requires [smbus2](https://github.com/kplindegaard/smbus2)** (auto installed)
+
+Manual installation:
+`python3 -m pip install smbus2`
+
+**H5py** (for data plotting)
 Ubuntu:
 `pip3 install h5py`
 
