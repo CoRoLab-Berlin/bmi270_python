@@ -5,7 +5,6 @@ import time
 from bmi270.BMI270 import *
 from bmi270.UDP import *
 
-
 # -------------------------------------------------
 # INITIALIZATION
 # -------------------------------------------------
@@ -39,9 +38,9 @@ BMI270_2.set_gyr_bwp(GYR_BWP_OSR4)
 # NETWORK CONFIGURATION
 # -------------------------------------------------
 
-RECEIVER_IP = '141.64.189.122'
+RECEIVER_IP = ''
 RECEIVER_PORT = 33771
-SENDER_IP = '141.64.189.111'
+SENDER_IP = ''
 SENDER_PORT = 33881
 
 Sender = UDP(RECEIVER_IP, RECEIVER_PORT, SENDER_IP, SENDER_PORT)
