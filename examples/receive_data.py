@@ -1,4 +1,6 @@
+import numpy as np
 import socket
+import struct
 import threading
 import time
 
@@ -6,9 +8,9 @@ import time
 # DEFINES
 # -------------------------------------------------
 
-UDP_IP              = "0.0.0.0"
-UDP_RECEIVER_PORTS  = [33771, 33772]
-UDP_SENDER_PORTS    = [33881, 33882]
+UDP_IP = '0.0.0.0'
+UDP_RECEIVER_PORTS = 33771
+UDP_SENDER_PORT = 33881
 
 
 # -------------------------------------------------
@@ -16,36 +18,17 @@ UDP_SENDER_PORTS    = [33881, 33882]
 # -------------------------------------------------
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-
-
-socks = []
-for port in UDP_RECEIVER_PORTS:
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.bind((UDP_IP, port))
-    print(f"Listening for data on port {port}...")
-    socks.append(sock)
+sock.bind((UDP_IP, UDP_RECEIVER_PORTS))
+print(f"Listening for data on port {UDP_RECEIVER_PORTS}...")
 
 # -------------------------------------------------
 # FUNCTIONS
 # -------------------------------------------------
 
+
 def print_seconds():
     threading.Timer(1.0, print_seconds).start()
     print("-" * 130, " ", int(time.time() - start_time), "s")
-
-def receive_data():
-    threading.Timer(0.02, receive_data).start()
-
-    for sock in socks:
-        data, address = sock.recvfrom(1024)
-        
-        if address[1] == UDP_SENDER_PORTS[0]:
-            print('Received from BMI270_1:', data.decode(), end="\t")
-        elif address[1] == UDP_SENDER_PORTS[1]:
-            print('Received from BMI270_2:', data.decode())
-        else:
-            print(f'Received from unknown device: {address[1]}', data.decode())
-
 
 
 
@@ -53,12 +36,17 @@ def receive_data():
 # MAIN
 # -------------------------------------------------
 
-print("Setup complete")
 start_time = time.time()
+
 
 def main():
     print_seconds()
-    receive_data()
+
+    while True:
+        received_data, address = sock.recvfrom(1024)
+        unpacked_data = struct.unpack('<3i3i3i3i', received_data)
+        print(unpacked_data)
+
 
 if __name__ == "__main__":
     main()

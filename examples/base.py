@@ -3,17 +3,8 @@ import threading
 import time
 
 from bmi270.BMI270 import *
+from bmi270.UDP import *
 
-
-
-# -------------------------------------------------
-# DEFINES
-# -------------------------------------------------
-
-RECEIVER_IP     = '141.64.189.122'
-RECEIVER_PORTS  = [33771, 33772]
-SENDER_IP       = '141.64.189.111'
-SENDER_PORTS    = [33881, 33882]
 
 # -------------------------------------------------
 # INITIALIZATION
@@ -48,26 +39,28 @@ BMI270_2.set_gyr_bwp(GYR_BWP_OSR4)
 # NETWORK CONFIGURATION
 # -------------------------------------------------
 
-BMI270_1.set_receiver_address(RECEIVER_IP, RECEIVER_PORTS[0])
-BMI270_1.set_sender_address(SENDER_IP, SENDER_PORTS[0])
-BMI270_2.set_receiver_address(RECEIVER_IP, RECEIVER_PORTS[1])
-BMI270_2.set_sender_address(SENDER_IP, SENDER_PORTS[1])
+RECEIVER_IP = '141.64.189.122'
+RECEIVER_PORT = 33771
+SENDER_IP = '141.64.189.111'
+SENDER_PORT = 33881
+
+Sender = UDP(RECEIVER_IP, RECEIVER_PORT, SENDER_IP, SENDER_PORT)
 
 # -------------------------------------------------
 # FUNCTIONS
 # -------------------------------------------------
 
+
 def print_seconds():
     threading.Timer(1.0, print_seconds).start()
     print("-" * 130, " ", int(time.time() - start_time), "s")
 
-def BMI270_1_send_all_data():
-    threading.Timer(0.02, BMI270_1_send_all_data).start()
-    BMI270_1.send_all_data()
 
-def BMI270_2_send_all_data():
-    threading.Timer(0.02, BMI270_2_send_all_data).start()
-    BMI270_2.send_all_data()
+def UDP_send_data():
+    threading.Timer(0.02, UDP_send_data).start()
+    data_bytes = Sender.pack_data(BMI270_1.get_raw_acc_data(), BMI270_1.get_raw_gyr_data(), BMI270_2.get_raw_acc_data(), BMI270_2.get_raw_gyr_data())
+    Sender.send_data(data_bytes)
+
 
 # -------------------------------------------------
 # MAIN
@@ -77,16 +70,11 @@ start_time = time.time()
 
 def main():
     print_seconds()
-    BMI270_1_send_all_data()
-    BMI270_2_send_all_data()
+    UDP_send_data()
+
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
 
 
 # -------------------------------------------------
@@ -113,7 +101,7 @@ if __name__ == "__main__":
 #             # gyro_array_2 = np.append(gyro_array_2, gyro_data_2, axis=0)
 
 #             # print(f'1-ACCEL: {accel_data_1}'.ljust(33), f'1-GYRO: {gyro_data_1}'.ljust(33), f'2-ACCEL: {accel_data_2}'.ljust(33), f'GYRO: {gyro_data_2}'.ljust(33))
-            
+
 #             sleep(5)
 # except KeyboardInterrupt:
 #     print("\n---- DATA STOPPED ----")
@@ -128,4 +116,3 @@ if __name__ == "__main__":
 #         h5_file.create_dataset("accel_data_2", data=accel_array_2)
 #         h5_file.create_dataset("gyro_data_2", data=gyro_array_2)
 #     print("---- FILE SAVED ----")
-
