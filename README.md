@@ -40,6 +40,14 @@ Ubuntu:
 Raspbian:
 `sudo apt-get install python3-h5py`
 
+## Functionality
+
+- BMI270 class integration
+- load config file into BMI270
+- write/read registers
+- a few other functions (see [BMI270.py](https://github.com/CoRoLab-Berlin/bmi270_python/blob/main/src/bmi270/BMI270.py))
+- sending gyro and accel data over UDP
+
 ## Credits & Related links
 
 - [serioeseGmbH/BMI160](https://github.com/serioeseGmbH/BMI160)
