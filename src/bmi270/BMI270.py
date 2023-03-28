@@ -1,4 +1,5 @@
 import numpy as np
+import socket
 from smbus2 import SMBus
 from time import sleep
 
@@ -15,12 +16,15 @@ class BMI270:
             exit(1)
         else:
             print("---- I2C BUS FOUND ----")
-        self.address = i2c_addr
+        self.address        = i2c_addr
         print(hex(self.address), " --> Chip ID: " + hex(self.bus.read_byte_data(i2c_addr, CHIP_ID_ADDRESS)))
-        self.acc_range = 2 * 9.81288
-        self.acc_odr = 100
-        self.gyr_range = 2000
-        self.gyr_odr = 200
+        self.acc_range        = 2 * GRAVITY
+        self.acc_odr          = 100
+        self.gyr_range        = 2000
+        self.gyr_odr          = 200
+        self.sock             = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        self.receiver_address = None
+        self.sender_address   = None
 
     def read_register(self, register_address) -> int:
             return self.bus.read_byte_data(self.address, register_address)
@@ -246,7 +250,7 @@ class BMI270:
         acc_value_z_msb = self.read_register(ACC_Z_15_8)
         acc_value_z = (acc_value_z_msb << 8) | acc_value_z_lsb
 
-        return np.array([[acc_value_x, acc_value_y, acc_value_z]]).astype(np.int16)
+        return np.array([acc_value_x, acc_value_y, acc_value_z]).astype(np.int16)
 
     def get_gyr_data(self) -> np.ndarray:
         gyr_value_x_lsb = self.read_register(GYR_X_7_0)
@@ -261,4 +265,28 @@ class BMI270:
         gyr_value_z_msb = self.read_register(GYR_Z_15_8)
         gyr_value_z = (gyr_value_z_msb << 8) | gyr_value_z_lsb
 
-        return np.array([[gyr_value_x, gyr_value_y, gyr_value_z]]).astype(np.int16) #* self.gyr_range / 32768
+        return np.array([gyr_value_x, gyr_value_y, gyr_value_z]).astype(np.int16) #* self.gyr_range / 32768
+    
+    def set_receiver_address(self, ip: str, port: int) -> None:
+        self.receiver_address = (ip, port)
+
+    def set_sender_address(self, ip: str, port: int) -> None:
+        self.sender_address = (ip, port)
+        self.sock.bind(self.sender_address)
+    
+    def send_acc_data(self) -> None:
+        acc_data_str = ','.join(map(str, self.get_acc_data()))
+        print(hex(self.address), " --> Sending Acceleration: " + acc_data_str)
+        self.sock.sendto(acc_data_str.encode(), self.receiver_address)
+    
+    def send_gyr_data(self) -> None:
+        gyr_data_str = ','.join(map(str, self.get_gyr_data()))
+        print(hex(self.address), " --> Sending Gyro: " + gyr_data_str)
+        self.sock.sendto(gyr_data_str.encode(), self.receiver_address)
+
+    def send_all_data(self) -> None:
+        # acc_data = self.get_acc_data()
+        # gyr_data = self.get_gyr_data()
+        test_data = str(np.concatenate((self.get_acc_data(), self.get_gyr_data())))
+        print(hex(self.address), " --> Sending Data: ", test_data)
+        self.sock.sendto(test_data.encode(), self.receiver_address)
