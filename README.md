@@ -1,4 +1,4 @@
-# BMI270 I2C Python Implementation - Version: 0.3
+# BMI270 I2C Python Implementation - Version: 0.3.2
 
 WIP BMI270 I2C Python implementation.
 
