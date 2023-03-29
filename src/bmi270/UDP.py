@@ -22,6 +22,10 @@ class UDP:
     def pack_data(self, *args) -> bytes:
         packed_data = bytearray()
         for arg in args:
-            arg_32bit = arg.astype(np.int32)
-            packed_data += struct.pack('<3i', *arg_32bit)
+            if type(arg) is np.ndarray:
+                arg_32bit = arg.astype(np.int32)
+                packed_data += struct.pack('<3i', *arg_32bit)
+            if type(arg) is int:
+                arg_32bit = np.array([arg], dtype=np.int32)
+                packed_data += struct.pack('<i', *arg_32bit)
         return bytes(packed_data)
