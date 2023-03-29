@@ -28,7 +28,7 @@ print(f"Listening for data on port {UDP_RECEIVER_PORTS}...")
 
 def print_seconds():
     threading.Timer(1.0, print_seconds).start()
-    print("-" * 130, " ", int(time.time() - start_time), "s")
+    print("-" * 80, " ", int(time.time() - start_time), "s")
 
 
 
@@ -44,7 +44,7 @@ def main():
 
     while True:
         received_data, address = sock.recvfrom(1024)
-        unpacked_data = struct.unpack('<3i3i3i3i', received_data)
+        unpacked_data = struct.unpack('<i3i3ii3i3i', received_data)
         print(unpacked_data)
 
 
