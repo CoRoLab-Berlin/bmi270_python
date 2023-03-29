@@ -4,14 +4,23 @@
 
 # General
 GRAVITY         = 9.81288
-BIT_8           = 8
-BIT_16          = 16
-BIT_32          = 32
+HERTZ_100       = 0.01
+HERTZ_200       = 0.005
 BINARY          = "bin"
 HEXADECIMAL     = "hex"
+BIT_0           = 0b00000001
+BIT_1           = 0b00000010
+BIT_2           = 0b00000100
+BIT_3           = 0b00001000
+BIT_4           = 0b00010000
+BIT_5           = 0b00100000
+BIT_6           = 0b01000000
+BIT_7           = 0b10000000
 LSB_MASK_8BIT   = 0x0F      # 00001111
 MSB_MASK_8BIT   = 0xF0      # 11110000
-LSB_8_MASK_8BIT = 0x8F      # 10001111
+LSB_MASK_8BIT_8 = 0x8F      # 10001111
+FIRST_5_BITS    = 0x1F      # 00011111
+LAST_3_BITS     = 0xE0      # 11100000
 
 # Device Modes
 LOW_POWER_MODE = "low_power"
