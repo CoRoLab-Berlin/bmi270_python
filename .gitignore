@@ -5,6 +5,9 @@
 !.vscode/extensions.json
 !.vscode/*.code-snippets
 
+# Python
+.pyc
+
 # Local History for Visual Studio Code
 .history/
 
