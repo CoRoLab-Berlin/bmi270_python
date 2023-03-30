@@ -186,39 +186,39 @@ class BMI270:
 
     def set_acc_bwp(self, bwp=ACC_BWP_NORMAL) -> None:
         if (bwp == ACC_BWP_OSR4):
-            self.write_register(ACC_CONF, ((self.read_register(ACC_CONF) & LSB_MASK_8BIT_8) | ACC_BWP_OSR4))
+            self.write_register(ACC_CONF, ((self.read_register(ACC_CONF) & LSB_MASK_8BIT_8) | (ACC_BWP_OSR4 << 4)))
             print(hex(self.address), " --> ACC BWP set to: OSR4")
         elif (bwp == ACC_BWP_OSR2):
-            self.write_register(ACC_CONF, ((self.read_register(ACC_CONF) & LSB_MASK_8BIT_8) | ACC_BWP_OSR2))
+            self.write_register(ACC_CONF, ((self.read_register(ACC_CONF) & LSB_MASK_8BIT_8) | (ACC_BWP_OSR2 << 4)))
             print(hex(self.address), " --> ACC BWP set to: OSR2")
         elif (bwp == ACC_BWP_NORMAL):
-            self.write_register(ACC_CONF, ((self.read_register(ACC_CONF) & LSB_MASK_8BIT_8) | ACC_BWP_NORMAL))
+            self.write_register(ACC_CONF, ((self.read_register(ACC_CONF) & LSB_MASK_8BIT_8) | (ACC_BWP_NORMAL << 4)))
             print(hex(self.address), " --> ACC BWP set to: NORMAL")
         elif (bwp == ACC_BWP_CIC):
-            self.write_register(ACC_CONF, ((self.read_register(ACC_CONF) & LSB_MASK_8BIT_8) | ACC_BWP_CIC))
+            self.write_register(ACC_CONF, ((self.read_register(ACC_CONF) & LSB_MASK_8BIT_8) | (ACC_BWP_CIC << 4)))
             print(hex(self.address), " --> ACC BWP set to: CIC")
         elif (bwp == ACC_BWP_RES16):
-            self.write_register(ACC_CONF, ((self.read_register(ACC_CONF) & LSB_MASK_8BIT_8) | ACC_BWP_RES16))
+            self.write_register(ACC_CONF, ((self.read_register(ACC_CONF) & LSB_MASK_8BIT_8) | (ACC_BWP_RES16 << 4)))
             print(hex(self.address), " --> ACC BWP set to: RES16")
         elif (bwp == ACC_BWP_RES32):
-            self.write_register(ACC_CONF, ((self.read_register(ACC_CONF) & LSB_MASK_8BIT_8) | ACC_BWP_RES32))
+            self.write_register(ACC_CONF, ((self.read_register(ACC_CONF) & LSB_MASK_8BIT_8) | (ACC_BWP_RES32 << 4)))
             print(hex(self.address), " --> ACC BWP set to: RES32")
         elif (bwp == ACC_BWP_RES64):
-            self.write_register(ACC_CONF, ((self.read_register(ACC_CONF) & LSB_MASK_8BIT_8) | ACC_BWP_RES64))
+            self.write_register(ACC_CONF, ((self.read_register(ACC_CONF) & LSB_MASK_8BIT_8) | (ACC_BWP_RES64 << 4)))
             print(hex(self.address), " --> ACC BWP set to: RES64")
         elif (bwp == ACC_BWP_RES128):
-            self.write_register(ACC_CONF, ((self.read_register(ACC_CONF) & LSB_MASK_8BIT_8) | ACC_BWP_RES128))
+            self.write_register(ACC_CONF, ((self.read_register(ACC_CONF) & LSB_MASK_8BIT_8) | (ACC_BWP_RES128 << 4)))
             print(hex(self.address), " --> ACC BWP set to: RES128")
 
     def set_gyr_bwp(self, bwp=GYR_BWP_NORMAL) -> None:
         if (bwp == GYR_BWP_OSR4):
-            self.write_register(GYR_CONF, ((self.read_register(GYR_CONF) & LSB_MASK_8BIT_8) | GYR_BWP_OSR4))
+            self.write_register(GYR_CONF, ((self.read_register(GYR_CONF) & LSB_MASK_8BIT_8) | (GYR_BWP_OSR4 << 4)))
             print(hex(self.address), " --> GYR BWP set to: OSR4")
         elif (bwp == GYR_BWP_OSR2):
-            self.write_register(GYR_CONF, ((self.read_register(GYR_CONF) & LSB_MASK_8BIT_8) | GYR_BWP_OSR2))
+            self.write_register(GYR_CONF, ((self.read_register(GYR_CONF) & LSB_MASK_8BIT_8) | (GYR_BWP_OSR2 << 4)))
             print(hex(self.address), " --> GYR BWP set to: OSR2")
         elif (bwp == GYR_BWP_NORMAL):
-            self.write_register(GYR_CONF, ((self.read_register(GYR_CONF) & LSB_MASK_8BIT_8) | GYR_BWP_NORMAL))
+            self.write_register(GYR_CONF, ((self.read_register(GYR_CONF) & LSB_MASK_8BIT_8) | (GYR_BWP_NORMAL << 4)))
             print(hex(self.address), " --> GYR BWP set to: NORMAL")
 
     def print_read_register(self, register_address, format="bin") -> None:

@@ -2,11 +2,11 @@ import h5py
 import threading
 import time
 
-from bmi270.BMI270 import *
-from bmi270.UDP import *
+# from bmi270.BMI270 import *
+# from bmi270.UDP import *
 
-# from src.bmi270.BMI270 import *
-# from src.bmi270.UDP import *
+from src.bmi270.BMI270 import *
+from src.bmi270.UDP import *
 
 # -------------------------------------------------
 # INITIALIZATION
@@ -45,10 +45,10 @@ BMI270_2.disable_fifo_header()
 # NETWORK CONFIGURATION
 # -------------------------------------------------
 
-RECEIVER_IP = ''
-RECEIVER_PORT = 12345
-SENDER_IP = ''
-SENDER_PORT = 12345
+RECEIVER_IP = '192.168.178.101'
+RECEIVER_PORT = 33771
+SENDER_IP = '192.168.178.100'
+SENDER_PORT = 33881
 
 Network = UDP(RECEIVER_IP, RECEIVER_PORT, SENDER_IP, SENDER_PORT)
 
