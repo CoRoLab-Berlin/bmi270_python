@@ -4,6 +4,7 @@
 
 # General
 GRAVITY         = 9.81288
+DEG2RAD         = 3.141592653589793 / 180
 HERTZ_100       = 0.01
 HERTZ_200       = 0.005
 BINARY          = "bin"
