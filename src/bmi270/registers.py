@@ -42,3 +42,7 @@ GYR_Y_7_0       = 0x14
 GYR_Y_15_8      = 0x15
 GYR_Z_7_0       = 0x16
 GYR_Z_15_8      = 0x17
+
+# Temperature
+TEMPERATURE_0 = 0x22
+TEMPERATURE_1 = 0x23
