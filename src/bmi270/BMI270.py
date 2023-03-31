@@ -25,6 +25,12 @@ class BMI270:
         self.gyr_range        = 2000
         self.gyr_odr          = 200
 
+    def __unsignedToSigned__(self, n, byte_count) -> int:
+        return int.from_bytes(n.to_bytes(byte_count, 'little', signed=False), 'little', signed=True)
+
+    def __signedToUnsigned__(self, n, byte_count) -> int:
+        return int.from_bytes(n.to_bytes(byte_count, 'little', signed=True), 'little', signed=False)
+
     def read_register(self, register_address) -> int:
             return self.bus.read_byte_data(self.address, register_address)
 
@@ -313,9 +319,23 @@ class BMI270:
 
         return np.array([gyr_value_x, gyr_value_y, gyr_value_z]).astype(np.int16)
     
-    def get_raw_temp_data(self) -> np.ndarray:
+    def get_raw_temp_data(self) -> int:
         temp_value_lsb = self.read_register(TEMPERATURE_0)
         temp_value_msb = self.read_register(TEMPERATURE_1)
         temp_value = (temp_value_msb << 8) | temp_value_lsb
 
-        return np.array([temp_value]).astype(np.int16)
+        return self.__unsignedToSigned__(temp_value, 2)
+    
+    def get_acc_data(self) -> np.ndarray:
+        pass                                        # TODO
+
+    def get_gyr_data(self) -> np.ndarray:
+        pass                                        # TODO
+
+    def get_temp_data(self) -> float:
+        raw_data = self.get_raw_temp_data()
+        temp_celsius = raw_data * 0.001952594 + 23.0
+        drift_correction = temp_celsius * 0.02 / 100.0
+        corrected_temp_celsius = temp_celsius + drift_correction
+        return corrected_temp_celsius
+
