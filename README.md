@@ -10,7 +10,9 @@ You can install this package using this command:
 `pip3 install bmi270`
 
 ## Usage
-Wire the breakout board with these lines : GND, 3V3, SDA, SCL
+Make sure these lines are connected: GND, 3V3, SDA, SCL
+
+If you are using the SparkFun SPX-17353 BMI270 Breakout Board, you can easily connect them using a 1mm 4-pin JST connector cable. (example: Qwiic cables)
 
 Make sure that the device is available at `0x68` or `0x69` i2c address by running this command:
 
