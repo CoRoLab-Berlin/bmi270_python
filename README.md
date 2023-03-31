@@ -18,6 +18,14 @@ Make sure that the device is available at `0x68` or `0x69` i2c address by runnin
 
 `i2cdetect -y 1`
 
+Make to load config onto the BMI270. This initialization step is necessary to be able to use all its functions.
+
+`load_config()`
+
+A full power cycle is necessary if you want to load the config again.
+
+Check out [examples](https://github.com/CoRoLab-Berlin/bmi270_python/tree/main/examples) for more information.
+
 ## Tested with:
 - Ubuntu 22.04.2 LTS
 - Raspbian Buster (32 Bit)
