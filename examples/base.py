@@ -28,8 +28,11 @@ BMI270_1.set_acc_odr(ACC_ODR_200)
 BMI270_1.set_gyr_odr(GYR_ODR_200)
 BMI270_1.set_acc_bwp(ACC_BWP_OSR4)
 BMI270_1.set_gyr_bwp(GYR_BWP_OSR4)
-BMI270_1.enable_fifo_streaming()
 BMI270_1.disable_fifo_header()
+BMI270_1.enable_data_streaming()
+BMI270_1.enable_acc_filter_perf()
+BMI270_1.enable_gyr_noise_perf()
+BMI270_1.enable_gyr_filter_perf()
 
 BMI270_2.set_mode(PERFORMANCE_MODE)
 BMI270_2.set_acc_range(ACC_RANGE_2G)
@@ -38,8 +41,12 @@ BMI270_2.set_acc_odr(ACC_ODR_200)
 BMI270_2.set_gyr_odr(GYR_ODR_200)
 BMI270_2.set_acc_bwp(ACC_BWP_OSR4)
 BMI270_2.set_gyr_bwp(GYR_BWP_OSR4)
-BMI270_2.enable_fifo_streaming()
 BMI270_2.disable_fifo_header()
+BMI270_2.enable_data_streaming()
+BMI270_2.enable_acc_filter_perf()
+BMI270_2.enable_gyr_noise_perf()
+BMI270_2.enable_gyr_filter_perf()
+
 
 # -------------------------------------------------
 # NETWORK CONFIGURATION
@@ -63,7 +70,6 @@ def print_seconds():
 
 
 def UDP_send_data():
-    # threading.Timer(HERTZ_100, UDP_send_data).start()
     data_bytes = Network.pack_data(BMI270_1.get_sensor_time(), BMI270_1.get_raw_acc_data(), BMI270_1.get_raw_gyr_data(),
                                    BMI270_2.get_sensor_time(), BMI270_2.get_raw_acc_data(), BMI270_2.get_raw_gyr_data())
     Network.send_data(data_bytes)
@@ -76,6 +82,8 @@ def UDP_send_data():
 
 print("\nStarting in 3 seconds...")
 time.sleep(3)
+
+
 start_time = time.time()
 
 def main():
@@ -86,8 +94,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
 
 
 # -------------------------------------------------
