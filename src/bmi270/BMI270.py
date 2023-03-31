@@ -82,67 +82,91 @@ class BMI270:
         else:
             print("Wrong mode. Use 'low_power', 'normal' or 'performance'")
 
-    def print_read_register(self, register_address, output_format="bin") -> None:
-        if (output_format == "bin"):
+    def print_read_register(self, register_address, output_format=BINARY) -> None:
+        if (output_format == BINARY):
             data = self.read_register(register_address)
             print("Register " + hex(register_address) + ": " + '{:08b}'.format(data))
-        elif (output_format == "hex"):
+        elif (output_format == HEXADECIMAL):
             data = self.read_register(register_address)
             print("Register " + hex(register_address) + ": " + hex(data))
         else:
             print("Wrong format. Use 'hex' or 'bin'")
 
-    def print_write_register(self, register_address, byte_data, output_format="bin") -> None:
-        if (output_format == "bin"):
+    def print_write_register(self, register_address, byte_data, output_format=BINARY) -> None:
+        if (output_format == BINARY):
             print(hex(register_address) + " before: \t" + '{:08b}'.format(self.read_register(register_address)))
             self.bus.write_byte_data(self.address, register_address, byte_data)
             print(hex(register_address) + " after: \t" + '{:08b}'.format(self.read_register(register_address)))
-        elif (output_format == "hex"):
+        elif (output_format == HEXADECIMAL):
             print(hex(register_address) + " before: \t" + hex(self.read_register(register_address)))
             self.bus.write_byte_data(self.address, register_address, byte_data)
             print(hex(register_address) + " after: \t" + hex(self.read_register(register_address)))
         else:
             print("Wrong format. Use 'hex' or 'bin'")
 
-    def enable_fifo_streaming(self) -> None:
-        self.write_register(FIFO_CONFIG_1, ((self.read_register(FIFO_CONFIG_1) & FIRST_5_BITS) | LAST_3_BITS))
-        print(hex(self.address), " --> FIFO Streaming Mode enabled")
+    def enable_aux(self) -> None:
+        self.write_register(PWR_CTRL, (self.read_register(PWR_CTRL) | BIT_0))
 
-    def disable_fifo_streaming(self) -> None:
-        self.write_register(FIFO_CONFIG_1, (self.read_register(FIFO_CONFIG_1) & FIRST_5_BITS))
-        print(hex(self.address), " --> FIFO Streaming Mode disabled")
+    def disable_aux(self) -> None:
+        self.write_register(PWR_CTRL, (self.read_register(PWR_CTRL) & ~BIT_0))
+
+    def enable_gyr(self) -> None:
+        self.write_register(PWR_CTRL, (self.read_register(PWR_CTRL) | BIT_1))
+
+    def disable_gyr(self) -> None:
+        self.write_register(PWR_CTRL, (self.read_register(PWR_CTRL) & ~BIT_1))
+
+    def enable_acc(self) -> None:
+        self.write_register(PWR_CTRL, (self.read_register(PWR_CTRL) | BIT_2))
+
+    def disable_acc(self) -> None:
+        self.write_register(PWR_CTRL, (self.read_register(PWR_CTRL) & ~BIT_2))
+
+    def enable_temp(self) -> None:
+        self.write_register(PWR_CTRL, (self.read_register(PWR_CTRL) | BIT_3))
+
+    def disable_temp(self) -> None:
+        self.write_register(PWR_CTRL, (self.read_register(PWR_CTRL) & ~BIT_3))
 
     def enable_fifo_header(self) -> None:
-        self.write_register(FIFO_CONFIG_1, ((self.read_register(FIFO_CONFIG_1) & (LSB_MASK_8BIT | LAST_3_BITS)) | BIT_4))
+        self.write_register(FIFO_CONFIG_1, (self.read_register(FIFO_CONFIG_1) | BIT_4))
         print(hex(self.address), " --> FIFO Header enabled")
 
     def disable_fifo_header(self) -> None:
-        self.write_register(FIFO_CONFIG_1, ((self.read_register(FIFO_CONFIG_1) & (LSB_MASK_8BIT | LAST_3_BITS))))
-        print(hex(self.address), " --> FIFO Header disabled")
+        self.write_register(FIFO_CONFIG_1, (self.read_register(FIFO_CONFIG_1) & ~BIT_4))
+        print(hex(self.address), " --> FIFO Header disabled (ODR of all enabled sensors need to be identical)")
 
-    def enable_aux(self) -> None:
-        self.write_register(PWR_CTRL, (self.read_register(PWR_CTRL) & LSB_MASK_8BIT) | BIT_0)
+    def enable_data_streaming(self) -> None:
+        self.write_register(FIFO_CONFIG_1, (self.read_register(FIFO_CONFIG_1) | LAST_3_BITS))
+        print(hex(self.address), " --> Streaming Mode enabled (no data will be stored in FIFO)")
 
-    def disable_aux(self) -> None:
-        self.write_register(PWR_CTRL, (self.read_register(PWR_CTRL) & LSB_MASK_8BIT) & ~BIT_0)
+    def disable_data_streaming(self) -> None:
+        self.write_register(FIFO_CONFIG_1, (self.read_register(FIFO_CONFIG_1) & ~LAST_3_BITS))
+        print(hex(self.address), " --> Streaming Mode disabled (data will be stored in FIFO)")
 
-    def enable_gyr(self) -> None:
-        self.write_register(PWR_CTRL, (self.read_register(PWR_CTRL) & LSB_MASK_8BIT) | BIT_1)
+    def enable_acc_filter_perf(self) -> None:
+        self.write_register(ACC_CONF, (self.read_register(ACC_CONF) | BIT_7))
+        print(hex(self.address), " --> Accelerometer filter performance enabled (performance optimized)")
 
-    def disable_gyr(self) -> None:
-        self.write_register(PWR_CTRL, (self.read_register(PWR_CTRL) & LSB_MASK_8BIT) & ~BIT_1)
+    def disable_acc_filter_perf(self) -> None:
+        self.write_register(ACC_CONF, (self.read_register(ACC_CONF) & ~BIT_7))
+        print(hex(self.address), " --> Accelerometer filter performance disabled (power optimized)")
 
-    def enable_acc(self) -> None:
-        self.write_register(PWR_CTRL, (self.read_register(PWR_CTRL) & LSB_MASK_8BIT) | BIT_2)
+    def enable_gyr_noise_perf(self) -> None:
+        self.write_register(GYR_CONF, (self.read_register(GYR_CONF) | BIT_6))
+        print(hex(self.address), " --> Gyroscope noise performance enabled (performance optimized)")
 
-    def disable_acc(self) -> None:
-        self.write_register(PWR_CTRL, (self.read_register(PWR_CTRL) & LSB_MASK_8BIT) & ~BIT_2)
+    def disable_gyr_noise_perf(self) -> None:
+        self.write_register(GYR_CONF, (self.read_register(GYR_CONF) & ~BIT_6))
+        print(hex(self.address), " --> Gyroscope noise performance disabled (power optimized)")
 
-    def enable_temp(self) -> None:
-        self.write_register(PWR_CTRL, (self.read_register(PWR_CTRL) & LSB_MASK_8BIT) | BIT_3)
+    def enable_gyr_filter_perf(self) -> None:
+        self.write_register(GYR_CONF, (self.read_register(GYR_CONF) | BIT_7))
+        print(hex(self.address), " --> Gyroscope filter performance enabled (performance optimized)")
 
-    def disable_temp(self) -> None:
-        self.write_register(PWR_CTRL, (self.read_register(PWR_CTRL) & LSB_MASK_8BIT) & ~BIT_3)
+    def disable_gyr_filter_perf(self) -> None:
+        self.write_register(GYR_CONF, (self.read_register(GYR_CONF) & ~BIT_7))
+        print(hex(self.address), " --> Gyroscope filter performance disabled (power optimized)")
 
     def set_acc_range(self, range=ACC_RANGE_2G) -> None:
         if (range == ACC_RANGE_2G):
