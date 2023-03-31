@@ -82,20 +82,27 @@ class BMI270:
         else:
             print("Wrong mode. Use 'low_power', 'normal' or 'performance'")
 
-    def print_read_register(self, register_address, format="bin") -> None:
-        if (format == "bin"):
+    def print_read_register(self, register_address, output_format="bin") -> None:
+        if (output_format == "bin"):
             data = self.read_register(register_address)
             print("Register " + hex(register_address) + ": " + '{:08b}'.format(data))
-        elif (format == "hex"):
+        elif (output_format == "hex"):
             data = self.read_register(register_address)
             print("Register " + hex(register_address) + ": " + hex(data))
         else:
             print("Wrong format. Use 'hex' or 'bin'")
 
-    def print_write_register(self, register_address, byte_data) -> None:
-        print(hex(register_address) + " before: \t" + '{:08b}'.format(self.read_register(register_address)))
-        self.bus.write_byte_data(self.address, register_address, byte_data)
-        print(hex(register_address) + " after: \t" + '{:08b}'.format(self.read_register(register_address)))
+    def print_write_register(self, register_address, byte_data, output_format="bin") -> None:
+        if (output_format == "bin"):
+            print(hex(register_address) + " before: \t" + '{:08b}'.format(self.read_register(register_address)))
+            self.bus.write_byte_data(self.address, register_address, byte_data)
+            print(hex(register_address) + " after: \t" + '{:08b}'.format(self.read_register(register_address)))
+        elif (output_format == "hex"):
+            print(hex(register_address) + " before: \t" + hex(self.read_register(register_address)))
+            self.bus.write_byte_data(self.address, register_address, byte_data)
+            print(hex(register_address) + " after: \t" + hex(self.read_register(register_address)))
+        else:
+            print("Wrong format. Use 'hex' or 'bin'")
 
     def enable_fifo_streaming(self) -> None:
         self.write_register(FIFO_CONFIG_1, ((self.read_register(FIFO_CONFIG_1) & FIRST_5_BITS) | LAST_3_BITS))
@@ -155,7 +162,7 @@ class BMI270:
             self.acc_range = 16 * GRAVITY
             print(hex(self.address), " --> ACC range set to: 16G")
         else:
-            print("Wrong range. Use 'ACC_RANGE_2G', 'ACC_RANGE_4G', 'ACC_RANGE_8G' or 'ACC_RANGE_16G'")
+            print("Wrong ACC range. Use 'ACC_RANGE_2G', 'ACC_RANGE_4G', 'ACC_RANGE_8G' or 'ACC_RANGE_16G'")
 
     def set_gyr_range(self, range=GYR_RANGE_2000) -> None:
         if (range == GYR_RANGE_2000):
@@ -179,7 +186,7 @@ class BMI270:
             self.gyr_range = 125
             print(hex(self.address), " --> GYR range set to: 125")
         else:
-            print("Wrong range. Use 'GYR_RANGE_2000', 'GYR_RANGE_1000', 'GYR_RANGE_500', 'GYR_RANGE_250' or 'GYR_RANGE_125'")
+            print("Wrong GYR range. Use 'GYR_RANGE_2000', 'GYR_RANGE_1000', 'GYR_RANGE_500', 'GYR_RANGE_250' or 'GYR_RANGE_125'")
 
     def set_acc_odr(self, odr=ACC_ODR_200) -> None:
         if (odr == ACC_ODR_1600):
@@ -210,6 +217,8 @@ class BMI270:
             self.write_register(ACC_CONF, ((self.read_register(ACC_CONF) & MSB_MASK_8BIT) | ACC_ODR_25))
             self.acc_odr = 25
             print(hex(self.address), " --> ACC ODR set to: 25")
+        else:
+            print("Wrong ACC ODR. Use 'ACC_ODR_1600', 'ACC_ODR_800', 'ACC_ODR_400', 'ACC_ODR_200', 'ACC_ODR_100', 'ACC_ODR_50' or 'ACC_ODR_25'")
 
     def set_gyr_odr(self, odr=GYR_ODR_200) -> None:
         if (odr == GYR_ODR_3200):
@@ -244,6 +253,8 @@ class BMI270:
             self.write_register(GYR_CONF, ((self.read_register(GYR_CONF) & MSB_MASK_8BIT) | GYR_ODR_25))
             self.gyr_odr = 25
             print(hex(self.address), " --> GYR ODR set to: 25")
+        else:
+            print("Wrong GYR ODR. Use 'GYR_ODR_3200', 'GYR_ODR_1600', 'GYR_ODR_800', 'GYR_ODR_400', 'GYR_ODR_200', 'GYR_ODR_100', 'GYR_ODR_50' or 'GYR_ODR_25'")
 
     def set_acc_bwp(self, bwp=ACC_BWP_NORMAL) -> None:
         if (bwp == ACC_BWP_OSR4):
@@ -270,6 +281,8 @@ class BMI270:
         elif (bwp == ACC_BWP_RES128):
             self.write_register(ACC_CONF, ((self.read_register(ACC_CONF) & LSB_MASK_8BIT_8) | (ACC_BWP_RES128 << 4)))
             print(hex(self.address), " --> ACC BWP set to: RES128")
+        else:
+            print("Wrong ACC BWP. Use 'ACC_BWP_OSR4', 'ACC_BWP_OSR2', 'ACC_BWP_NORMAL', 'ACC_BWP_CIC', 'ACC_BWP_RES16', 'ACC_BWP_RES32', 'ACC_BWP_RES64' or 'ACC_BWP_RES128'")
 
     def set_gyr_bwp(self, bwp=GYR_BWP_NORMAL) -> None:
         if (bwp == GYR_BWP_OSR4):
@@ -281,6 +294,8 @@ class BMI270:
         elif (bwp == GYR_BWP_NORMAL):
             self.write_register(GYR_CONF, ((self.read_register(GYR_CONF) & LSB_MASK_8BIT_8) | (GYR_BWP_NORMAL << 4)))
             print(hex(self.address), " --> GYR BWP set to: NORMAL")
+        else:
+            print("Wrong GYR BWP. Use 'GYR_BWP_OSR4', 'GYR_BWP_OSR2' or 'GYR_BWP_NORMAL'")
 
     def get_sensor_time(self) -> int:
         sensortime_0 = self.read_register(SENSORTIME_0)
