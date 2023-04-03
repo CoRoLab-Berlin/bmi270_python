@@ -1,6 +1,8 @@
 # BMI270 I2C Python Implementation - Version: 0.3.2
 
-WIP BMI270 I2C Python implementation.
+WIP BMI270 I2C Python implementation. This is my current project for my practical phase at my University.
+
+**CURRENTLY YOU CAN'T EXPECT MORE THAN 50HZ (working on it)**
 
 ## Installation
 The package is [available on pypi.org](https://pypi.org/project/bmi270).
@@ -38,17 +40,6 @@ Check out [examples](https://github.com/CoRoLab-Berlin/bmi270_python/tree/main/e
 
 Manual installation:
 `pip3 install smbus2`
-
-
-**optional:**
-
-**[H5py](https://pypi.org/project/h5py)** *(for data plotting)*
-
-Ubuntu:
-`pip3 install h5py`
-
-Raspbian:
-`sudo apt-get install python3-h5py`
 
 ## Functionality
 
