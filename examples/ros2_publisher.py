@@ -1,9 +1,9 @@
 import numpy as np
+# import qmt
 import socket
 import struct
 import threading
 import time
-# import qmt
 import quaternion
 
 import rclpy
@@ -26,42 +26,46 @@ class MyPublisher(Node):
         super().__init__('QuaternionPublisher')
         self.publisher_ = self.create_publisher(Quaternion, 'quaternions', 10)
         self.tf_broadcaster_ = tf2_ros.StaticTransformBroadcaster(self)
-        self.i = 0
+        self.old_time = 0
 
     def timer_callback(self):
         quaternion_data = self.receive_data()
+
+        if quaternion_data is None:
+            return
+        
         msg = Quaternion()
-        # msg.x = quaternion_data[1]
-        # msg.y = quaternion_data[2]
-        # msg.z = quaternion_data[3]
-        # msg.w = quaternion_data[0]
+        msg.x = quaternion_data[1]
+        msg.y = quaternion_data[2]
+        msg.z = quaternion_data[3]
+        msg.w = quaternion_data[0]
 
-        self.i += 1
-
-        # self._logger.info(f"Publishing {self.i}")
         self.publisher_.publish(msg)
 
-        # create a transform based on the quaternion
-        # transform = TransformStamped()
-        # transform.header.stamp = self.get_clock().now().to_msg()
-        # transform.header.frame_id = "world"
-        # transform.child_frame_id = "map"
-        # transform.transform.rotation = msg
+        transform = TransformStamped()
+        transform.header.stamp = self.get_clock().now().to_msg()
+        transform.header.frame_id = "world"
+        transform.child_frame_id = "map"
+        transform.transform.rotation = msg
 
-        # broadcast the transform
-        # self.tf_broadcaster_.sendTransform(transform)
+        self.tf_broadcaster_.sendTransform(transform)
 
     def receive_data(self):
         data, addr = sock.recvfrom(1024)
-        # data = struct.unpack('14i', data)
-        # data = self.quaternion_orientation(data)
+        data = struct.unpack('14i', data)
+        data = self.quaternion_orientation(data)
         return data
 
     def quaternion_orientation(self, data):
-        # Define initial variables
         q = quaternion.one
-        dt = 0.005  # time step in seconds
 
+        new_time = data[7]
+        dt = (new_time - self.old_time) / 1000
+        self.old_time = new_time
+
+        if (dt > 0.008):
+            return
+        
         # Raw sensor data
         accelerometer_data = np.array([data[8], data[9], data[10]])
         gyroscope_data = np.array([data[11], data[12], data[13]])
@@ -115,15 +119,15 @@ def print_seconds():
 
 start_time = time.time()
 
+
 def main(args=None):
+
     print_seconds()
+
     rclpy.init(args=args)
     my_publisher = MyPublisher()
-
     while True:
-        my_publisher.timer_callback()
-        print(my_publisher.i)
-
+        MyPublisher.timer_callback(my_publisher)
     my_publisher.destroy_node()
     rclpy.shutdown()
 
