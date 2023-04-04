@@ -13,6 +13,8 @@ For a Raspberry Pi Setup add/change this line in /boot/config.txt to your desire
 
 `dtparam=i2c_baudrate=400000`
 
+Reboot your Raspberry Pi after applying the change.
+
 ## Usage
 Make sure these lines are connected: GND, 3V3, SDA, SCL
 
@@ -49,7 +51,6 @@ Manual installation:
 - load config file into BMI270
 - write/read registers
 - a few other functions (see [BMI270.py](https://github.com/CoRoLab-Berlin/bmi270_python/blob/main/src/bmi270/BMI270.py))
-- sending gyro and accel data over UDP
 
 ## Credits & Related links
 
