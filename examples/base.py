@@ -1,12 +1,11 @@
 import socket
 import threading
 import time
-import timeit
-import statistics
 
-# from bmi270.BMI270 import *
+from bmi270.BMI270 import *
 
-from src.bmi270.BMI270 import *
+# from src.bmi270.BMI270 import *
+
 
 # -------------------------------------------------
 # INITIALIZATION
@@ -17,6 +16,7 @@ BMI270_1.load_config_file()
 
 BMI270_2 = BMI270(I2C_SEC_ADDR)
 BMI270_2.load_config_file()
+
 
 # -------------------------------------------------
 # HARDWARE CONFIGURATION
@@ -53,11 +53,13 @@ BMI270_2.enable_gyr_filter_perf()
 # NETWORK CONFIGURATION
 # -------------------------------------------------
 
+# Change IP and port to your needs
 RECEIVER_ADDRESS = ('', 12345)
 SENDER_ADDRESS = ('', 12345)
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.bind(SENDER_ADDRESS)
+
 
 # -------------------------------------------------
 # CONSTANTS
@@ -88,7 +90,7 @@ def get_and_send_data():
     data_array[7] = get_milliseconds()
     data_array[8:11] = BMI270_2.get_raw_acc_data()
     data_array[11:14] = BMI270_2.get_raw_gyr_data()
-
+    
     sock.sendto(data_array.tobytes(), RECEIVER_ADDRESS)
 
 
@@ -109,7 +111,6 @@ def main():
         current_time = time.time() - start_time
         get_and_send_data()
         time_delta = current_time - old_time
-        print(time_delta)
         old_time = current_time
         sleep(max(HERTZ_200 - time_delta, 0))
 
