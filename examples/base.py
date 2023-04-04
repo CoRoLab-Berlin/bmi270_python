@@ -1,16 +1,17 @@
-import h5py
+import socket
 import threading
 import time
+import timeit
+import statistics
 
-from bmi270.BMI270 import *
-from bmi270.UDP import *
+# from bmi270.BMI270 import *
 
-# from src.bmi270.BMI270 import *
-# from src.bmi270.UDP import *
+from src.bmi270.BMI270 import *
 
 # -------------------------------------------------
 # INITIALIZATION
 # -------------------------------------------------
+
 BMI270_1 = BMI270(I2C_PRIM_ADDR)
 BMI270_1.load_config_file()
 
@@ -52,16 +53,25 @@ BMI270_2.enable_gyr_filter_perf()
 # NETWORK CONFIGURATION
 # -------------------------------------------------
 
-RECEIVER_IP = ''
-RECEIVER_PORT = 12345
-SENDER_IP = ''
-SENDER_PORT = 12345
+RECEIVER_ADDRESS = ('', 12345)
+SENDER_ADDRESS = ('', 12345)
 
-Network = UDP(RECEIVER_IP, RECEIVER_PORT, SENDER_IP, SENDER_PORT)
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+sock.bind(SENDER_ADDRESS)
+
+# -------------------------------------------------
+# CONSTANTS
+# -------------------------------------------------
+
+start_time = time.time()
+
 
 # -------------------------------------------------
 # FUNCTIONS
 # -------------------------------------------------
+
+def get_milliseconds():
+    return int(round((time.time() - start_time) * 1000))    # temporary solution (dirty hack) - needs right formatting for correct overflow
 
 
 def print_seconds():
@@ -69,11 +79,17 @@ def print_seconds():
     print("-" * 80, " ", int(time.time() - start_time), "s")
 
 
-def UDP_send_data():
-    data_bytes = Network.pack_data(BMI270_1.get_sensor_time(), BMI270_1.get_raw_acc_data(), BMI270_1.get_raw_gyr_data(),
-                                   BMI270_2.get_sensor_time(), BMI270_2.get_raw_acc_data(), BMI270_2.get_raw_gyr_data())
-    Network.send_data(data_bytes)
-    sleep(HERTZ_200)
+def get_and_send_data():
+    data_array = np.zeros(14, dtype=np.int32)
+
+    data_array[0] = get_milliseconds()
+    data_array[1:4] = BMI270_1.get_raw_acc_data()
+    data_array[4:7] = BMI270_1.get_raw_gyr_data()
+    data_array[7] = get_milliseconds()
+    data_array[8:11] = BMI270_2.get_raw_acc_data()
+    data_array[11:14] = BMI270_2.get_raw_gyr_data()
+
+    sock.sendto(data_array.tobytes(), RECEIVER_ADDRESS)
 
 
 # -------------------------------------------------
@@ -84,28 +100,19 @@ print("\nStarting in 3 seconds...")
 time.sleep(3)
 
 
-start_time = time.time()
-
 def main():
+    current_time = 0.0
+    old_time = 0.0
     print_seconds()
 
     while True:
-        UDP_send_data()
+        current_time = time.time() - start_time
+        get_and_send_data()
+        time_delta = current_time - old_time
+        print(time_delta)
+        old_time = current_time
+        sleep(max(HERTZ_200 - time_delta, 0))
+
 
 if __name__ == "__main__":
     main()
-
-
-# -------------------------------------------------
-# H5 FILE
-# -------------------------------------------------
-
-# # Save as H5 file
-# if False:
-#     print("---- SAVING FILE ----")
-#     with h5py.File("sensor_data.h5", "w") as h5_file:
-#         h5_file.create_dataset("accel_data_1", data=accel_array_1)
-#         h5_file.create_dataset("gyro_data_1", data=gyro_array_1)
-#         h5_file.create_dataset("accel_data_2", data=accel_array_2)
-#         h5_file.create_dataset("gyro_data_2", data=gyro_array_2)
-#     print("---- FILE SAVED ----")
