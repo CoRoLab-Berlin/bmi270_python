@@ -2,14 +2,16 @@
 
 WIP BMI270 I2C Python implementation. This is my current project for my practical phase at my University.
 
-**CURRENTLY YOU CAN'T EXPECT MORE THAN 50HZ (working on it)**
-
 ## Installation
 The package is [available on pypi.org](https://pypi.org/project/bmi270).
 
 You can install this package using this command:
 
 `pip3 install bmi270`
+
+For a Raspberry Pi Setup add/change this line in /boot/config.txt to your desired baudrate:
+
+`dtparam=i2c_baudrate=400000`
 
 ## Usage
 Make sure these lines are connected: GND, 3V3, SDA, SCL
