@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import numpy as np
 # import qmt
 import socket
@@ -12,9 +14,17 @@ from rclpy.node import Node
 from geometry_msgs.msg import TransformStamped, Quaternion
 
 
-# from bmi270.definitions import *
+from bmi270.definitions import *
 
-from src.bmi270.definitions import *
+# from src.bmi270.definitions import *
+
+# -------------------------------------------------
+# CONSTANTS
+# -------------------------------------------------
+
+CURRENT_ACC_RANGE = 2
+CURRENT_GYR_RANGE = 125
+
 
 # -------------------------------------------------
 # PUBLISHER
@@ -30,9 +40,6 @@ class MyPublisher(Node):
 
     def timer_callback(self):
         quaternion_data = self.receive_data()
-
-        if quaternion_data is None:
-            return
         
         msg = Quaternion()
         msg.x = quaternion_data[1]
@@ -63,49 +70,38 @@ class MyPublisher(Node):
         dt = (new_time - self.old_time) / 1000
         self.old_time = new_time
 
-        if (dt > 0.008):
-            return
-        
         # Raw sensor data
         accelerometer_data = np.array([data[8], data[9], data[10]])
         gyroscope_data = np.array([data[11], data[12], data[13]])
 
         # Convert accelerometer data to m/s^2
-        acceleration = np.array([0, 0, 0]).astype(np.float64)
-        acceleration[0] = (accelerometer_data[0] / 32767) * 2 * GRAVITY
-        acceleration[1] = (accelerometer_data[1] / 32767) * 2 * GRAVITY
-        acceleration[2] = (accelerometer_data[2] / 32767) * 2 * GRAVITY
+        acc_x = (accelerometer_data[0] / 32767) * CURRENT_ACC_RANGE * GRAVITY
+        acc_y = (accelerometer_data[1] / 32767) * CURRENT_ACC_RANGE * GRAVITY
+        acc_z = (accelerometer_data[2] / 32767) * CURRENT_ACC_RANGE * GRAVITY
 
         # Convert gyroscope data to radians/s
-        angular_velocity = np.array([0, 0, 0]).astype(np.float64)
-        angular_velocity[0] = (gyroscope_data[0] / 32767) * 2000 * DEG2RAD
-        angular_velocity[1] = (gyroscope_data[1] / 32767) * 2000 * DEG2RAD
-        angular_velocity[2] = (gyroscope_data[2] / 32767) * 2000 * DEG2RAD
+        gyr_x = (gyroscope_data[0] / 32767) * CURRENT_GYR_RANGE * DEG2RAD / 2
+        gyr_y = (gyroscope_data[1] / 32767) * CURRENT_GYR_RANGE * DEG2RAD / 2
+        gyr_z = (gyroscope_data[2] / 32767) * CURRENT_GYR_RANGE * DEG2RAD / 2
 
         # Calculate quaternion orientation
-        q_dot = quaternion.quaternion(0, angular_velocity[0], angular_velocity[1], angular_velocity[2])
+        q_dot = quaternion.quaternion(0, gyr_x, gyr_y, gyr_z)
         q += q_dot * q * dt
         q = q.normalized()
 
-        return np.array(q.components, dtype=np.float64)
-
-# -------------------------------------------------
-# DEFINES
-# -------------------------------------------------
-
-
-UDP_IP = '0.0.0.0'
-UDP_RECEIVER_PORTS = 33771
-UDP_SENDER_PORT = 33772
+        return np.array(q.components)
 
 
 # -------------------------------------------------
 # NETWORK CONFIGURATION
 # -------------------------------------------------
 
+RECEIVER_ADDRESS = ('0.0.0.0', 8000)
+SENDER_PORT = 8000
+
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.bind((UDP_IP, UDP_RECEIVER_PORTS))
-print(f"Listening for data on port {UDP_RECEIVER_PORTS}...")
+sock.bind(RECEIVER_ADDRESS)
+
 
 # -------------------------------------------------
 # MAIN
@@ -120,14 +116,16 @@ def print_seconds():
 start_time = time.time()
 
 
-def main(args=None):
-
+def main():
     print_seconds()
 
-    rclpy.init(args=args)
+    rclpy.init()
     my_publisher = MyPublisher()
+    
     while True:
         MyPublisher.timer_callback(my_publisher)
+
+    # rclpy.spin(my_publisher)()
     my_publisher.destroy_node()
     rclpy.shutdown()
 
