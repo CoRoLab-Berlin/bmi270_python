@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import socket
 import threading
 import time
@@ -24,7 +26,7 @@ BMI270_2.load_config_file()
 
 BMI270_1.set_mode(PERFORMANCE_MODE)
 BMI270_1.set_acc_range(ACC_RANGE_2G)
-BMI270_1.set_gyr_range(GYR_RANGE_2000)
+BMI270_1.set_gyr_range(GYR_RANGE_125)
 BMI270_1.set_acc_odr(ACC_ODR_200)
 BMI270_1.set_gyr_odr(GYR_ODR_200)
 BMI270_1.set_acc_bwp(ACC_BWP_OSR4)
@@ -37,7 +39,7 @@ BMI270_1.enable_gyr_filter_perf()
 
 BMI270_2.set_mode(PERFORMANCE_MODE)
 BMI270_2.set_acc_range(ACC_RANGE_2G)
-BMI270_2.set_gyr_range(GYR_RANGE_2000)
+BMI270_2.set_gyr_range(GYR_RANGE_125)
 BMI270_2.set_acc_odr(ACC_ODR_200)
 BMI270_2.set_gyr_odr(GYR_ODR_200)
 BMI270_2.set_acc_bwp(ACC_BWP_OSR4)
@@ -54,8 +56,8 @@ BMI270_2.enable_gyr_filter_perf()
 # -------------------------------------------------
 
 # Change IP and port to your needs
-RECEIVER_ADDRESS = ('', 12345)
-SENDER_ADDRESS = ('', 12345)
+RECEIVER_ADDRESS = ('', 8000)
+SENDER_ADDRESS = ('', 8000)
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.bind(SENDER_ADDRESS)
