@@ -4,9 +4,9 @@ import socket
 import threading
 import time
 
-from bmi270.BMI270 import *
+# from bmi270.BMI270 import *
 
-# from src.bmi270.BMI270 import *
+from src.bmi270.BMI270 import *
 
 
 # -------------------------------------------------
@@ -56,11 +56,13 @@ BMI270_2.enable_gyr_filter_perf()
 # -------------------------------------------------
 
 # Change IP and port to your needs
-RECEIVER_ADDRESS = ('', 8000)
-SENDER_ADDRESS = ('', 8000)
+RECEIVER_ADDRESS = ('141.64.189.122', 8000)
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.bind(SENDER_ADDRESS)
+
+# Setup sender address if needed (always use the same sport as sender)
+# SENDER_ADDRESS = ('192.168.0.1', 8001)
+# sock.bind(SENDER_ADDRESS)
 
 
 # -------------------------------------------------
@@ -71,17 +73,11 @@ start_time = time.time()
 
 
 # -------------------------------------------------
-# FUNCTIONS
+# HELPER FUNCTIONS
 # -------------------------------------------------
 
 def get_milliseconds():
-    return int(round((time.time() - start_time) * 1000))    # temporary solution (dirty hack) - needs right formatting for correct overflow
-
-
-def print_seconds():
-    threading.Timer(1.0, print_seconds).start()
-    print("-" * 80, " ", int(time.time() - start_time), "s")
-
+    return int(round((time.time() - start_time) * 1000))
 
 def get_and_send_data():
     data_array = np.zeros(14, dtype=np.int32)
@@ -100,21 +96,22 @@ def get_and_send_data():
 # MAIN
 # -------------------------------------------------
 
-print("\nStarting in 3 seconds...")
-time.sleep(3)
-
-
 def main():
     current_time = 0.0
     old_time = 0.0
-    print_seconds()
+    update_rate = 0.005
+
+    print("\nSending data to " + str(RECEIVER_ADDRESS) + " at " + str(1 / update_rate) + " Hz\n")
 
     while True:
         current_time = time.time() - start_time
+        
         get_and_send_data()
+
         time_delta = current_time - old_time
         old_time = current_time
-        sleep(max(HERTZ_200 - time_delta, 0))
+        
+        sleep(max(update_rate - time_delta, 0))
 
 
 if __name__ == "__main__":
