@@ -2,13 +2,13 @@ import numpy as np
 from smbus2 import SMBus
 from time import sleep
 
-# from bmi270.config_file import *
-# from bmi270.registers import *
-# from bmi270.definitions import *
+from bmi270.config_file import *
+from bmi270.registers import *
+from bmi270.definitions import *
 
-from src.bmi270.config_file import *
-from src.bmi270.registers import *
-from src.bmi270.definitions import *
+# from src.bmi270.config_file import *
+# from src.bmi270.registers import *
+# from src.bmi270.definitions import *
 
 class BMI270:
     def __init__(self, i2c_addr) -> None:
