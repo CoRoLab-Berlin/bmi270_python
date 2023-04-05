@@ -4,9 +4,9 @@ import socket
 import threading
 import time
 
-# from bmi270.BMI270 import *
+from bmi270.BMI270 import *
 
-from src.bmi270.BMI270 import *
+# from src.bmi270.BMI270 import *
 
 
 # -------------------------------------------------
@@ -56,7 +56,7 @@ BMI270_2.enable_gyr_filter_perf()
 # -------------------------------------------------
 
 # Change IP and port to your needs
-RECEIVER_ADDRESS = ('141.64.189.122', 8000)
+RECEIVER_ADDRESS = ('192.168.0.1', 8000)
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
