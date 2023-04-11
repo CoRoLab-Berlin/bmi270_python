@@ -24,7 +24,7 @@ Make sure that the device is available at `0x68` or `0x69` i2c address by runnin
 
 `i2cdetect -y 1`
 
-Make to load config onto the BMI270. This initialization step is necessary to be able to use all its functions.
+The BMI270 requires a config load. This initialization step is necessary to be able to use all its functions.
 
 `load_config()`
 
