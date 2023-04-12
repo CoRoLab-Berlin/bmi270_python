@@ -13,11 +13,21 @@ from bmi270.BMI270 import *
 # INITIALIZATION
 # -------------------------------------------------
 
-BMI270_1 = BMI270(I2C_PRIM_ADDR)
-BMI270_1.load_config_file()
+try:
+    BMI270_1 = BMI270(I2C_PRIM_ADDR)
+    BMI270_1.load_config_file()
+except Exception as e:
+    print("Error: " + str(e))
+    print("Could not initialize BMI270_1. Check your wiring or try again.")
+    exit(1)
 
-BMI270_2 = BMI270(I2C_SEC_ADDR)
-BMI270_2.load_config_file()
+try:
+    BMI270_2 = BMI270(I2C_SEC_ADDR)
+    BMI270_2.load_config_file()
+except Exception as e:
+    print("Error: " + str(e))
+    print("Could not initialize BMI270_2. Check your wiring or try again.")
+    exit(1)
 
 
 # -------------------------------------------------
@@ -56,12 +66,12 @@ BMI270_2.enable_gyr_filter_perf()
 # -------------------------------------------------
 
 # Change IP and port to your needs
-RECEIVER_ADDRESS = ('192.168.0.1', 8000)
+RECEIVER_ADDRESS = ('192.168.1.2', 8000)
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-# Setup sender address if needed (always use the same sport as sender)
-# SENDER_ADDRESS = ('192.168.0.1', 8001)
+# Setup sender address if needed (to always use the same sport as sender)
+# SENDER_ADDRESS = ('192.168.1.1', 8001)
 # sock.bind(SENDER_ADDRESS)
 
 
@@ -100,18 +110,28 @@ def main():
     current_time = 0.0
     old_time = 0.0
     update_rate = 0.005
+    data_streaming = False
 
-    print("\nSending data to " + str(RECEIVER_ADDRESS) + " at " + str(1 / update_rate) + " Hz\n")
 
     while True:
         current_time = time.time() - start_time
         
-        get_and_send_data()
+        try:
+            get_and_send_data()
+            if not data_streaming:
+                print("\nSending data to " + str(RECEIVER_ADDRESS) + " at " + str(1 / update_rate) + " Hz\n")
+                data_streaming = True
+        except Exception as e:
+            print("Error: " + str(e))
+            print("Could not send data. Check your wiring. Trying again in 5 seconds...")
+            data_streaming = False
+            sleep(5)
 
         time_delta = current_time - old_time
         old_time = current_time
         
         sleep(max(update_rate - time_delta, 0))
+
 
 
 if __name__ == "__main__":
