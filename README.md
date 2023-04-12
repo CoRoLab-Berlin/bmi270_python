@@ -58,3 +58,9 @@ Manual installation:
 - [lefuturiste](https://github.com/lefuturiste/BMI160-i2c)
 - [BMI270 Datasheet](https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bmi270-ds000.pdf)
 - [smbus2 docs](https://smbus2.readthedocs.io/en/latest/)
+
+## Troubleshooting
+
+-bash: pip3: command not found
+
+`sudo apt install python3-pip`
