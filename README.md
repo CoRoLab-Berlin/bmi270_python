@@ -1,6 +1,6 @@
-# BMI270 I2C Python Implementation - Version: 0.3.6
+# BMI270 I2C Python Implementation - Version: 0.4.0
 
-WIP BMI270 I2C Python implementation. This is my current project for my practical phase at my University.
+Bare bones BMI270 I2C Python implementation. This was a project for my practical phase at my University.
 
 ## Installation
 The package is [available on pypi.org](https://pypi.org/project/bmi270).
@@ -34,7 +34,7 @@ Check out [examples](https://github.com/CoRoLab-Berlin/bmi270_python/tree/main/e
 
 ## Tested with:
 - Ubuntu 22.04.2 LTS
-- Raspbian Buster (32 Bit)
+- Raspbian 10 - Buster (32 Bit)
 
 ## Dependencies
 
