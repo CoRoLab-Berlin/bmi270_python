@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import socket
-import threading
 import time
 
 from bmi270.BMI270 import *
@@ -36,7 +35,7 @@ except Exception as e:
 
 BMI270_1.set_mode(PERFORMANCE_MODE)
 BMI270_1.set_acc_range(ACC_RANGE_2G)
-BMI270_1.set_gyr_range(GYR_RANGE_125)
+BMI270_1.set_gyr_range(GYR_RANGE_1000)
 BMI270_1.set_acc_odr(ACC_ODR_200)
 BMI270_1.set_gyr_odr(GYR_ODR_200)
 BMI270_1.set_acc_bwp(ACC_BWP_OSR4)
@@ -49,7 +48,7 @@ BMI270_1.enable_gyr_filter_perf()
 
 BMI270_2.set_mode(PERFORMANCE_MODE)
 BMI270_2.set_acc_range(ACC_RANGE_2G)
-BMI270_2.set_gyr_range(GYR_RANGE_125)
+BMI270_2.set_gyr_range(GYR_RANGE_1000)
 BMI270_2.set_acc_odr(ACC_ODR_200)
 BMI270_2.set_gyr_odr(GYR_ODR_200)
 BMI270_2.set_acc_bwp(ACC_BWP_OSR4)
