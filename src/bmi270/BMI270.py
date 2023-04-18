@@ -22,7 +22,7 @@ class BMI270:
         print(hex(self.address), " --> Chip ID: " + hex(self.bus.read_byte_data(i2c_addr, CHIP_ID_ADDRESS)))
         self.acc_range        = 2 * GRAVITY
         self.acc_odr          = 100
-        self.gyr_range        = 2000
+        self.gyr_range        = 1000
         self.gyr_odr          = 200
 
     def __unsignedToSigned__(self, n, byte_count) -> int:
@@ -366,15 +366,21 @@ class BMI270:
         return self.__unsignedToSigned__(temp_value, 2)
     
     def get_acc_data(self) -> np.ndarray:
-        pass                                        # TODO
+        raw_acc_data = self.get_raw_acc_data()
+        acceleration = raw_acc_data / 32767 * self.acc_range                        # in m/s²
+
+        return acceleration
 
     def get_gyr_data(self) -> np.ndarray:
-        pass                                        # TODO
+        raw_gyr_data = self.get_raw_gyr_data()
+        angular_velocity = np.deg2rad(1) * raw_gyr_data / 32767 * self.gyr_range    # in rad/s
 
+        return angular_velocity
+    
     def get_temp_data(self) -> float:
         raw_data = self.get_raw_temp_data()
         temp_celsius = raw_data * 0.001952594 + 23.0
         drift_correction = temp_celsius * 0.02 / 100.0
         corrected_temp_celsius = temp_celsius + drift_correction
+        
         return corrected_temp_celsius
-
