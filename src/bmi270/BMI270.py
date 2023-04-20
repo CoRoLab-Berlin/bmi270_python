@@ -359,28 +359,26 @@ class BMI270:
         return np.array([gyr_value_x, gyr_value_y, gyr_value_z]).astype(np.int16)
     
     def get_raw_temp_data(self) -> int:
-        temp_value_lsb = self.read_register(TEMPERATURE_0)
-        temp_value_msb = self.read_register(TEMPERATURE_1)
+        temp_value_lsb = self.read_register(TEMP_7_0)
+        temp_value_msb = self.read_register(TEMP_15_8)
         temp_value = (temp_value_msb << 8) | temp_value_lsb
 
         return self.__unsignedToSigned__(temp_value, 2)
     
     def get_acc_data(self) -> np.ndarray:
         raw_acc_data = self.get_raw_acc_data()
-        acceleration = raw_acc_data / 32767 * self.acc_range                        # in m/s²
+        acceleration = raw_acc_data / 32768 * self.acc_range                        # in m/s²
 
         return acceleration
 
     def get_gyr_data(self) -> np.ndarray:
         raw_gyr_data = self.get_raw_gyr_data()
-        angular_velocity = np.deg2rad(1) * raw_gyr_data / 32767 * self.gyr_range    # in rad/s
+        angular_velocity = np.deg2rad(1) * raw_gyr_data / 32768 * self.gyr_range    # in rad/s
 
         return angular_velocity
     
     def get_temp_data(self) -> float:
         raw_data = self.get_raw_temp_data()
         temp_celsius = raw_data * 0.001952594 + 23.0
-        drift_correction = temp_celsius * 0.02 / 100.0
-        corrected_temp_celsius = temp_celsius + drift_correction
         
-        return corrected_temp_celsius
+        return temp_celsius
