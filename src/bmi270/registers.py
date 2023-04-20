@@ -20,6 +20,7 @@ INIT_CTRL       = 0x59
 INIT_ADDR_0     = 0x5B
 INIT_ADDR_1     = 0x5C
 INIT_DATA       = 0x5E
+CMD             = 0x7E
 PWR_CONF        = 0x7C
 PWR_CTRL        = 0x7D
 
@@ -44,5 +45,5 @@ GYR_Z_7_0       = 0x16
 GYR_Z_15_8      = 0x17
 
 # Temperature
-TEMPERATURE_0 = 0x22
-TEMPERATURE_1 = 0x23
+TEMP_7_0        = 0x22
+TEMP_15_8       = 0x23
