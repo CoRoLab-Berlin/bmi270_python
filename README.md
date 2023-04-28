@@ -1,4 +1,4 @@
-# BMI270 I2C Python Implementation - Version: 0.4.1
+# BMI270 I2C Python Implementation - Version: 0.4.2
 
 Bare bones BMI270 I2C Python implementation. This was a project for my practical phase at my University and my first time working hands on with IMUs.
 
